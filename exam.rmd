@@ -1,0 +1,37 @@
+calculate_average_aqi <- function(air_quality_data, city_name) {
+  city_data <- subset(air_quality_data, City == city_name)
+  
+  # Calculate AQI for each pollutant
+  aqi_pm25 <- (city_data$PM2.5 / 12) * 500
+  aqi_pm10 <- (city_data$PM10 / 50) * 500
+  aqi_so2 <- (city_data$SO2 / 80) * 100
+  aqi_no2 <- (city_data$NO2 / 80) * 100
+  aqi_co <- (city_data$CO / 4) * 100
+  aqi_o3 <- (city_data$O3 / 100) * 100
+  
+  # Calculate overall AQI as the maximum of individual AQI values
+  aqi_values <- cbind(aqi_pm25, aqi_pm10, aqi_so2, aqi_no2, aqi_co, aqi_o3)
+  city_data$AQI <- apply(aqi_values, 1, max)
+  
+  # Calculate average AQI for the city
+  average_aqi <- mean(city_data$AQI)
+  
+  return(average_aqi)
+}
+
+# Sample air quality data frame
+air_quality_data <- data.frame(
+  Station_ID = c(1, 2, 3, 4),
+  City = c("CityA", "CityB", "CityA", "CityC"),
+  PM2.5 = c(30, 25, 35, 20),
+  PM10 = c(40, 30, 45, 35),
+  SO2 = c(8, 6, 10, 4),
+  NO2 = c(25, 20, 30, 15),
+  CO = c(0.5, 0.4, 0.6, 0.3),
+  O3 = c(35, 40, 30, 45),
+  AQI = c(60, 50, 70, 40)
+)
+
+city_name <- "CityA"
+result <- calculate_average_aqi(air_quality_data, city_name)
+print(result)
